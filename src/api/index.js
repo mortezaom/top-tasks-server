@@ -1,6 +1,7 @@
 const express = require('express');
 
-const emojis = require('./emojis');
+const roadmaps = require('./roadmaps');
+const verifyToken = require('./verifyToken')
 
 const router = express.Router();
 
@@ -9,7 +10,6 @@ router.get('/', (req, res) => {
     message: 'API - 👋🌎🌍🌏'
   });
 });
-
-router.use('/emojis', emojis);
+router.use('/roadmaps', verifyToken, roadmaps);
 
 module.exports = router;
