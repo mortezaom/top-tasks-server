@@ -10,7 +10,7 @@ const { users } = db
 
 const saltRounds = 10
 
-const schema = require('../schema/user')
+const schema = require('../schemas/user')
 
 // register user
 router.post('/register', async (req, res, next) => {
@@ -18,6 +18,7 @@ router.post('/register', async (req, res, next) => {
         const { body } = req
         const { error } = schema.validate(body)
         if (error) {
+            console.log(error)
             return res.status(400).json({
                 error: error.details[0].message,
             })
@@ -42,6 +43,7 @@ router.post('/register', async (req, res, next) => {
             token,
         })
     } catch (error) {
+        console.log(error)
         next(error)
     }
 })
@@ -126,3 +128,5 @@ router.post('/change-password', async (req, res, next) => {
 function generateToken(data) {
     return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: '1d' });
 }
+
+module.exports = router

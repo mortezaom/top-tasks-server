@@ -5,7 +5,7 @@ const router = express.Router();
 const db = mongoist(process.env.MONGODB_URI);
 const { roadmaps } = db;
 
-const schema = require('../schema/roadmap');
+const schema = require('../schemas/roadmap');
 
 router.get('/', async (req, res, next) => {
   try {
