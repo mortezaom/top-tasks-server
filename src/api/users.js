@@ -52,20 +52,23 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     try {
         const { body } = req
+        console.log(body)
         const { error } = schema.validate(body)
         if (error) {
+            console.log(error)
             return res.status(400).json({
                 error: error.details[0].message,
             })
         }
         const { username, password } = body
-        const user = await users.findOne({ username })
-        if (!user) {
+        const newUser = await users.findOne({ username })
+        console.log(newUser)
+        if (!newUser) {
             return res.status(400).json({
                 error: 'Username does not exist',
             })
         }
-        const isValid = await bcrypt.compare(password, user.password)
+        const isValid = await bcrypt.compare(password, newUser.password)
         if (!isValid) {
             return res.status(400).json({
                 error: 'Invalid password',

@@ -1,8 +1,7 @@
 const Joi = require('joi')
 module.exports = Joi.object({
     name: Joi.string()
-        .trim()
-        .required(),
+        .trim(),
     username: Joi.string()
         .trim()
         .required(),
