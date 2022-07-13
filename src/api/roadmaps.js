@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoist = require('mongoist')
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
 
 const db = mongoist(process.env.MONGODB_URI);
 const { roadmaps } = db;
@@ -29,7 +30,10 @@ router.get('/my', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const value = await schema.validateAsync(JSON.parse(req.body));
+    const data = JSON.parse(req.body.data);
+    data.userId = req.user._id;
+    data.items = data.items.map(item => { return { _id: mongoist.ObjectId().toString(), name: item.name, videos: item.videos, learnTime: item.learnTime } });
+    const value = await schema.validateAsync(data);
     const item = await roadmaps.insert(value);
     res.json(item).status(200).end();
   } catch (error) {
@@ -40,8 +44,12 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   try {
-    const value = await schema.validateAsync(JSON.parse(req.body));
-    const item = await roadmaps.update({ id: req.params.id }, value);
+    const value = await schema.validateAsync(JSON.parse(req.body['data']));
+    console.log(value)
+    await roadmaps.remove({ _id: mongoist.ObjectId(req.params.id) });
+    value._id = mongoist.ObjectId(req.params.id);
+    const item = await roadmaps.insert(value, { forceServerObjectId: false });
+    console.log(item)
     res.json(item).status(200).end();
   } catch (error) {
     next(error);

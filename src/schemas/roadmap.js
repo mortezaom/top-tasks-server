@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const roadmapItem = require('./roadmapItem');
 module.exports = Joi.object({
-    items: Joi.array().items(roadmapItem).required(),
-    userId: Joi.string().required(),
+    _id: Joi.string(),
     name: Joi.string().required(),
+    userId: Joi.string().required(),
+    items: Joi.array().items(roadmapItem).required(),
 });
