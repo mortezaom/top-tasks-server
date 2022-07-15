@@ -2,6 +2,7 @@ const express = require('express')
 const mongoist = require('mongoist')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
+const verifyToken = require('./validateToken')
 
 const router = express.Router()
 
@@ -86,29 +87,32 @@ router.post('/login', async (req, res, next) => {
 })
 
 // change user password
-router.post('/change-password', async (req, res, next) => {
+router.put('/changePass', verifyToken, async (req, res, next) => {
     try {
-        const { body } = req
-        const { error } = schema.validate(body)
-        if (error) {
+        console.log(req.body)
+        const body = req.body
+        if (!body.oldPass || !body.newPass || body.oldPass == '' || body.newPass == '') {
             return res.status(400).json({
-                error: error.details[0].message,
+                error: "Invalid request body",
             })
         }
-        const { username, oldPassword, newPassword } = body
-        const user = await users.findOne({ username })
+
+        const { oldPass, newPass } = body
+        const user = await users.findOne({ _id: mongoist.ObjectId(req.user._id) })
         if (!user) {
+            console.log('Username does not exist')
             return res.status(400).json({
                 error: 'Username does not exist',
             })
         }
-        const isValid = await bcrypt.compare(oldPassword, user.password)
+        const isValid = await bcrypt.compare(oldPass, user.password)
         if (!isValid) {
+            console.log('Invalid password')
             return res.status(400).json({
                 error: 'Invalid password',
             })
         }
-        const hash = await bcrypt.hash(newPassword, saltRounds)
+        const hash = await bcrypt.hash(newPass, saltRounds)
         const newUser = await users.update({
             _id: user._id,
         }, {
