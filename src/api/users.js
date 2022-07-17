@@ -51,7 +51,7 @@ router.post('/register', async (req, res, next) => {
 
 // login user
 router.post('/login', async (req, res, next) => {
-    console.log(users)
+    console.log('user ' + users)
     try {
         const { body } = req
         console.log(body)
