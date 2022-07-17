@@ -19,7 +19,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/my', async (req, res, next) => {
   try {
-    console.log(req.user._id)
+    console.log(req.user)
     const items = await roadmaps.find({ userId: req.user._id });
     console.log(items)
     res.json(items).end();
