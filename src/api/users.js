@@ -24,7 +24,7 @@ router.post('/register', async (req, res, next) => {
                 error: error.details[0].message,
             })
         }
-        const { username, password } = body
+        const { name, username, password } = body
         const user = await users.findOne({ username })
         if (user) {
             return res.status(400).json({
@@ -33,6 +33,7 @@ router.post('/register', async (req, res, next) => {
         }
         const hash = await bcrypt.hash(password, saltRounds)
         const newUser = await users.insert({
+            name,
             username,
             password: hash,
             createdAt: new Date().toISOString(),
