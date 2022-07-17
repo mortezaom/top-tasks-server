@@ -6,7 +6,7 @@ const verifyToken = require('./validateToken')
 
 const router = express.Router()
 
-const db = mongoist(process.env.MONGODB_URI)
+const db = mongoist('mongodb://127.0.0.1:27017/topTasks')
 const { users } = db
 
 const saltRounds = 10
@@ -51,7 +51,6 @@ router.post('/register', async (req, res, next) => {
 
 // login user
 router.post('/login', async (req, res, next) => {
-    console.log('user ' + users)
     try {
         const { body } = req
         console.log(body)
